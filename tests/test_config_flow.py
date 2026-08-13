@@ -5,7 +5,7 @@ from __future__ import annotations
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
-from qbittorrentapi.exceptions import APIConnectionError, LoginFailed
+from qbittorrentapi.exceptions import APIConnectionError, Forbidden403Error, LoginFailed
 
 from custom_components.qbt.const import CONF_SCAN_INTERVAL, DOMAIN
 
@@ -58,6 +58,19 @@ async def test_invalid_auth_shows_error(hass, mock_qbt_client_class, mock_qbt_cl
     assert result["type"] is FlowResultType.FORM
     assert result["step_id"] == "auth"
     assert result["errors"] == {"base": "invalid_auth"}
+
+
+async def test_banned_shows_distinct_error_from_invalid_auth(
+    hass, mock_qbt_client_class, mock_qbt_client
+):
+    """Forbidden403Error (qBittorrent brute-force ban) must not look like wrong credentials."""
+    mock_qbt_client.auth_log_in.side_effect = Forbidden403Error()
+
+    result = await _start_user_flow(hass)
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], USER_INPUT)
+
+    assert result["type"] is FlowResultType.FORM
+    assert result["errors"] == {"base": "banned"}
 
 
 async def test_cannot_connect_shows_error(hass, mock_qbt_client_class, mock_qbt_client):

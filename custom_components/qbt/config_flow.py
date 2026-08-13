@@ -166,7 +166,11 @@ class QBittorrentConfigFlow(ConfigFlow, domain=DOMAIN):
             except LoginFailed:
                 errors["base"] = "invalid_auth"
             except Forbidden403Error:
-                errors["base"] = "invalid_auth"
+                # qBittorrent's brute-force protection bans the client IP after
+                # too many failed attempts; every subsequent login (even with
+                # correct credentials) gets 403 until the ban clears. This is
+                # a distinct error from wrong credentials (LoginFailed above).
+                errors["base"] = "banned"
             except UnsupportedQbittorrentVersion:
                 _LOGGER.warning(
                     "Connected to an unsupported qBittorrent version; continuing anyway"
@@ -213,7 +217,7 @@ class QBittorrentConfigFlow(ConfigFlow, domain=DOMAIN):
             except LoginFailed:
                 errors["base"] = "invalid_auth"
             except Forbidden403Error:
-                errors["base"] = "invalid_auth"
+                errors["base"] = "banned"
             except APIConnectionError:
                 errors["base"] = "cannot_connect"
             except UnsupportedQbittorrentVersion:

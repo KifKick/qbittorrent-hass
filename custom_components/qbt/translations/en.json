@@ -34,6 +34,7 @@
     },
     "error": {
       "invalid_auth": "Invalid username/password or API key.",
+      "banned": "qBittorrent's brute-force protection has temporarily banned this connection after too many failed login attempts, even though your credentials may be correct. Restart qBittorrent (this usually clears the ban) or wait, then try again. You can adjust or disable this in qBittorrent under Tools → Options → Web UI → Enable brute-force protection.",
       "cannot_connect": "Cannot connect to qBittorrent. Check the host, port and network path.",
       "unknown": "Unexpected error."
     },

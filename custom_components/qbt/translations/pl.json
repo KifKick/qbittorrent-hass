@@ -34,6 +34,7 @@
     },
     "error": {
       "invalid_auth": "Nieprawidłowa nazwa użytkownika/hasło lub klucz API.",
+      "banned": "Ochrona przed atakami brute-force w qBittorrent tymczasowo zablokowała to połączenie po zbyt wielu nieudanych próbach logowania — nawet jeśli Twoje dane są poprawne. Zrestartuj qBittorrent (to zwykle czyści blokadę) albo poczekaj, a potem spróbuj ponownie. Możesz to dostosować lub wyłączyć w qBittorrent: Tools → Options → Web UI → Enable brute-force protection.",
       "cannot_connect": "Nie można połączyć się z qBittorrent. Sprawdź host, port i ścieżkę sieciową.",
       "unknown": "Nieoczekiwany błąd."
     },
