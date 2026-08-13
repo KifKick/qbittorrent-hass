@@ -13,3 +13,4 @@ async def test_diagnostics_redacts_secrets(hass, mock_config_entry):
     assert diagnostics["entry"]["host"] == "**REDACTED**"
     assert diagnostics["app_version"] == "v5.2.3"
     assert diagnostics["torrent_count"] == 2
+    assert diagnostics["qbittorrent_api_library_version"] != "unknown"

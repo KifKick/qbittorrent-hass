@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as pkg_version
 from typing import Any
 
 from homeassistant.components.diagnostics import async_redact_data
@@ -27,9 +29,15 @@ async def async_get_config_entry_diagnostics(
     coordinator = entry.runtime_data
     data = coordinator.data
 
+    try:
+        library_version = pkg_version("qbittorrent-api")
+    except PackageNotFoundError:
+        library_version = "unknown"
+
     return {
         "entry": async_redact_data(dict(entry.data), TO_REDACT_ENTRY),
         "options": dict(entry.options),
+        "qbittorrent_api_library_version": library_version,
         "last_update_success": coordinator.last_update_success,
         "app_version": data.app_version,
         "web_api_version": data.web_api_version,
