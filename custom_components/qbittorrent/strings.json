@@ -1,0 +1,298 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to qBittorrent",
+        "description": "Enter the connection details for your qBittorrent Web UI.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "use_https": "Use HTTPS",
+          "verify_ssl": "Verify SSL certificate",
+          "path": "URL path prefix (reverse proxy, optional)",
+          "auth_method": "Authentication method"
+        }
+      },
+      "auth": {
+        "title": "Authenticate",
+        "description": "Enter your qBittorrent credentials.",
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "api_key": "API key"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate qBittorrent",
+        "description": "The connection to qBittorrent needs to be re-authenticated.",
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "api_key": "API key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username/password or API key.",
+      "cannot_connect": "Cannot connect to qBittorrent. Check the host, port and network path.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This qBittorrent instance is already configured.",
+      "reauth_successful": "Re-authentication was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "qBittorrent options",
+        "data": {
+          "scan_interval": "Scan interval (seconds)",
+          "enable_torrent_list_sensor": "Enable the torrent list sensor",
+          "max_torrents_in_attributes": "Maximum torrents in the torrent list sensor's attributes"
+        }
+      }
+    }
+  },
+  "selector": {
+    "auth_method": {
+      "options": {
+        "password": "Username / password",
+        "api_key": "API key"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dl_speed": { "name": "Download speed" },
+      "up_speed": { "name": "Upload speed" },
+      "dl_data_session": { "name": "Downloaded this session" },
+      "up_data_session": { "name": "Uploaded this session" },
+      "dl_limit": { "name": "Download speed limit" },
+      "up_limit": { "name": "Upload speed limit" },
+      "global_ratio": { "name": "Global share ratio" },
+      "free_space": { "name": "Free space" },
+      "dht_nodes": { "name": "DHT nodes" },
+      "total_peer_connections": { "name": "Peer connections" },
+      "connection_status": {
+        "name": "Connection status",
+        "state": {
+          "connected": "Connected",
+          "firewalled": "Firewalled",
+          "disconnected": "Disconnected"
+        }
+      },
+      "torrents_total": { "name": "Torrents" },
+      "torrents_downloading": { "name": "Torrents downloading" },
+      "torrents_seeding": { "name": "Torrents seeding" },
+      "torrents_paused": { "name": "Torrents paused" },
+      "torrents_checking": { "name": "Torrents checking" },
+      "torrents_error": { "name": "Torrents with errors" },
+      "categories_count": { "name": "Categories" },
+      "tags_count": { "name": "Tags" },
+      "app_version": { "name": "qBittorrent version" },
+      "webapi_version": { "name": "Web API version" },
+      "default_save_path": { "name": "Default save path" },
+      "torrent_list": { "name": "Torrent list" },
+      "categories_list": { "name": "Category list" },
+      "tags_list": { "name": "Tag list" }
+    },
+    "binary_sensor": {
+      "connectivity": { "name": "Connectivity" }
+    },
+    "switch": {
+      "alt_speed_limits": { "name": "Alternative speed limits" },
+      "dht": { "name": "DHT" }
+    },
+    "button": {
+      "resume_all": { "name": "Resume all torrents" },
+      "pause_all": { "name": "Pause all torrents" },
+      "reannounce_all": { "name": "Reannounce all torrents" },
+      "shutdown": { "name": "Shut down qBittorrent" }
+    }
+  },
+  "issues": {
+    "unsupported_version": {
+      "title": "Unsupported qBittorrent version",
+      "description": "The connected qBittorrent instance runs a version that is not fully supported by this integration ({error}). Most functionality should still work, but you may see errors for some entities or services."
+    }
+  },
+  "services": {
+    "add_torrent": {
+      "name": "Add torrent",
+      "description": "Add one or more torrents by magnet/URL or by uploading a .torrent file."
+    },
+    "delete_torrents": {
+      "name": "Delete torrents",
+      "description": "Remove one or more torrents, optionally deleting their files."
+    },
+    "pause_torrents": {
+      "name": "Pause torrents",
+      "description": "Pause (stop) one or more torrents. Use 'all' to pause every torrent."
+    },
+    "resume_torrents": {
+      "name": "Resume torrents",
+      "description": "Resume (start) one or more torrents. Use 'all' to resume every torrent."
+    },
+    "recheck_torrents": {
+      "name": "Recheck torrents",
+      "description": "Force a hash recheck of one or more torrents."
+    },
+    "reannounce_torrents": {
+      "name": "Reannounce torrents",
+      "description": "Force one or more torrents to reannounce to their trackers."
+    },
+    "force_start": {
+      "name": "Force start",
+      "description": "Enable or disable force start for one or more torrents."
+    },
+    "set_auto_management": {
+      "name": "Set automatic torrent management",
+      "description": "Enable or disable automatic torrent management for one or more torrents."
+    },
+    "set_super_seeding": {
+      "name": "Set super seeding",
+      "description": "Enable or disable super seeding for one or more torrents."
+    },
+    "increase_priority": {
+      "name": "Increase priority",
+      "description": "Increase the queue priority of one or more torrents."
+    },
+    "decrease_priority": {
+      "name": "Decrease priority",
+      "description": "Decrease the queue priority of one or more torrents."
+    },
+    "top_priority": {
+      "name": "Top priority",
+      "description": "Move one or more torrents to the top of the queue."
+    },
+    "bottom_priority": {
+      "name": "Bottom priority",
+      "description": "Move one or more torrents to the bottom of the queue."
+    },
+    "set_location": {
+      "name": "Set location",
+      "description": "Move one or more torrents' files to a new location."
+    },
+    "set_save_path": {
+      "name": "Set save path",
+      "description": "Set the save path for one or more torrents."
+    },
+    "set_category": {
+      "name": "Set category",
+      "description": "Assign a category to one or more torrents."
+    },
+    "add_tags": {
+      "name": "Add tags",
+      "description": "Add one or more tags to one or more torrents."
+    },
+    "remove_tags": {
+      "name": "Remove tags",
+      "description": "Remove one or more tags from one or more torrents."
+    },
+    "set_share_limits": {
+      "name": "Set share limits",
+      "description": "Set ratio, seeding time and inactive seeding time limits for one or more torrents."
+    },
+    "set_upload_limit": {
+      "name": "Set torrent upload limit",
+      "description": "Set the upload speed limit for one or more torrents."
+    },
+    "set_download_limit": {
+      "name": "Set torrent download limit",
+      "description": "Set the download speed limit for one or more torrents."
+    },
+    "rename_torrent": {
+      "name": "Rename torrent",
+      "description": "Rename a single torrent."
+    },
+    "set_file_priority": {
+      "name": "Set file priority",
+      "description": "Set the download priority of specific files within a torrent."
+    },
+    "export_torrent": {
+      "name": "Export torrent",
+      "description": "Export a torrent's .torrent file as base64-encoded content."
+    },
+    "create_category": {
+      "name": "Create category",
+      "description": "Create a new torrent category."
+    },
+    "edit_category": {
+      "name": "Edit category",
+      "description": "Edit an existing torrent category."
+    },
+    "remove_categories": {
+      "name": "Remove categories",
+      "description": "Delete one or more torrent categories."
+    },
+    "create_tags": {
+      "name": "Create tags",
+      "description": "Create one or more tags."
+    },
+    "delete_tags": {
+      "name": "Delete tags",
+      "description": "Delete one or more tags."
+    },
+    "set_speed_limits_mode": {
+      "name": "Set alternative speed limits mode",
+      "description": "Enable or disable the alternative global speed limits."
+    },
+    "set_global_download_limit": {
+      "name": "Set global download limit",
+      "description": "Set the global download speed limit."
+    },
+    "set_global_upload_limit": {
+      "name": "Set global upload limit",
+      "description": "Set the global upload speed limit."
+    },
+    "ban_peers": {
+      "name": "Ban peers",
+      "description": "Ban one or more peers by host:port."
+    },
+    "set_preferences": {
+      "name": "Set application preferences",
+      "description": "Set one or more raw qBittorrent application preference keys."
+    },
+    "rss_add_feed": {
+      "name": "Add RSS feed",
+      "description": "Add a new RSS feed."
+    },
+    "rss_remove_item": {
+      "name": "Remove RSS item",
+      "description": "Remove an RSS folder or feed."
+    },
+    "rss_set_rule": {
+      "name": "Set RSS auto-download rule",
+      "description": "Create or update an RSS auto-downloading rule."
+    },
+    "rss_remove_rule": {
+      "name": "Remove RSS auto-download rule",
+      "description": "Delete an RSS auto-downloading rule."
+    },
+    "search_start": {
+      "name": "Start search",
+      "description": "Start a qBittorrent plugin search."
+    },
+    "search_stop": {
+      "name": "Stop search",
+      "description": "Stop a running search."
+    },
+    "search_get_results": {
+      "name": "Get search results",
+      "description": "Retrieve results for a search job."
+    },
+    "get_torrents": {
+      "name": "Get torrents",
+      "description": "Retrieve the full, optionally filtered, list of torrents (use this to look up hashes)."
+    },
+    "get_app_preferences": {
+      "name": "Get application preferences",
+      "description": "Retrieve all current qBittorrent application preferences."
+    },
+    "create_torrent": {
+      "name": "Create torrent",
+      "description": "Create a new .torrent file from content on the qBittorrent host (best-effort; newest part of the API)."
+    }
+  }
+}

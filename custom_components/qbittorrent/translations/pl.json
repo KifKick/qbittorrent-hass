@@ -1,0 +1,298 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z qBittorrent",
+        "description": "Podaj dane połączenia do interfejsu WebUI qBittorrent.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "use_https": "Użyj HTTPS",
+          "verify_ssl": "Weryfikuj certyfikat SSL",
+          "path": "Prefiks ścieżki URL (reverse proxy, opcjonalnie)",
+          "auth_method": "Metoda uwierzytelniania"
+        }
+      },
+      "auth": {
+        "title": "Uwierzytelnianie",
+        "description": "Podaj dane logowania do qBittorrent.",
+        "data": {
+          "username": "Nazwa użytkownika",
+          "password": "Hasło",
+          "api_key": "Klucz API"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Ponowne uwierzytelnienie qBittorrent",
+        "description": "Połączenie z qBittorrent wymaga ponownego uwierzytelnienia.",
+        "data": {
+          "username": "Nazwa użytkownika",
+          "password": "Hasło",
+          "api_key": "Klucz API"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Nieprawidłowa nazwa użytkownika/hasło lub klucz API.",
+      "cannot_connect": "Nie można połączyć się z qBittorrent. Sprawdź host, port i ścieżkę sieciową.",
+      "unknown": "Nieoczekiwany błąd."
+    },
+    "abort": {
+      "already_configured": "Ta instancja qBittorrent jest już skonfigurowana.",
+      "reauth_successful": "Ponowne uwierzytelnienie powiodło się."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje qBittorrent",
+        "data": {
+          "scan_interval": "Interwał odpytywania (sekundy)",
+          "enable_torrent_list_sensor": "Włącz sensor listy torrentów",
+          "max_torrents_in_attributes": "Maksymalna liczba torrentów w atrybutach sensora listy torrentów"
+        }
+      }
+    }
+  },
+  "selector": {
+    "auth_method": {
+      "options": {
+        "password": "Nazwa użytkownika / hasło",
+        "api_key": "Klucz API"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "dl_speed": { "name": "Prędkość pobierania" },
+      "up_speed": { "name": "Prędkość wysyłania" },
+      "dl_data_session": { "name": "Pobrano w tej sesji" },
+      "up_data_session": { "name": "Wysłano w tej sesji" },
+      "dl_limit": { "name": "Limit prędkości pobierania" },
+      "up_limit": { "name": "Limit prędkości wysyłania" },
+      "global_ratio": { "name": "Globalny współczynnik udziału" },
+      "free_space": { "name": "Wolne miejsce" },
+      "dht_nodes": { "name": "Węzły DHT" },
+      "total_peer_connections": { "name": "Połączenia z peerami" },
+      "connection_status": {
+        "name": "Status połączenia",
+        "state": {
+          "connected": "Połączono",
+          "firewalled": "Za zaporą sieciową",
+          "disconnected": "Rozłączono"
+        }
+      },
+      "torrents_total": { "name": "Torrenty" },
+      "torrents_downloading": { "name": "Torrenty pobierane" },
+      "torrents_seeding": { "name": "Torrenty wysyłane" },
+      "torrents_paused": { "name": "Torrenty wstrzymane" },
+      "torrents_checking": { "name": "Torrenty sprawdzane" },
+      "torrents_error": { "name": "Torrenty z błędami" },
+      "categories_count": { "name": "Kategorie" },
+      "tags_count": { "name": "Tagi" },
+      "app_version": { "name": "Wersja qBittorrent" },
+      "webapi_version": { "name": "Wersja Web API" },
+      "default_save_path": { "name": "Domyślna ścieżka zapisu" },
+      "torrent_list": { "name": "Lista torrentów" },
+      "categories_list": { "name": "Lista kategorii" },
+      "tags_list": { "name": "Lista tagów" }
+    },
+    "binary_sensor": {
+      "connectivity": { "name": "Łączność" }
+    },
+    "switch": {
+      "alt_speed_limits": { "name": "Alternatywne limity prędkości" },
+      "dht": { "name": "DHT" }
+    },
+    "button": {
+      "resume_all": { "name": "Wznów wszystkie torrenty" },
+      "pause_all": { "name": "Wstrzymaj wszystkie torrenty" },
+      "reannounce_all": { "name": "Reannounce wszystkich torrentów" },
+      "shutdown": { "name": "Zamknij qBittorrent" }
+    }
+  },
+  "issues": {
+    "unsupported_version": {
+      "title": "Niewspierana wersja qBittorrent",
+      "description": "Połączona instancja qBittorrent działa w wersji, która nie jest w pełni wspierana przez tę integrację ({error}). Większość funkcji powinna działać, ale niektóre encje lub serwisy mogą zgłaszać błędy."
+    }
+  },
+  "services": {
+    "add_torrent": {
+      "name": "Dodaj torrent",
+      "description": "Dodaje jeden lub więcej torrentów przez magnet/URL lub przesyłając plik .torrent."
+    },
+    "delete_torrents": {
+      "name": "Usuń torrenty",
+      "description": "Usuwa jeden lub więcej torrentów, opcjonalnie wraz z plikami."
+    },
+    "pause_torrents": {
+      "name": "Wstrzymaj torrenty",
+      "description": "Wstrzymuje jeden lub więcej torrentów. Użyj 'all', aby wstrzymać wszystkie."
+    },
+    "resume_torrents": {
+      "name": "Wznów torrenty",
+      "description": "Wznawia jeden lub więcej torrentów. Użyj 'all', aby wznowić wszystkie."
+    },
+    "recheck_torrents": {
+      "name": "Sprawdź ponownie torrenty",
+      "description": "Wymusza ponowne sprawdzenie skrótów (hash recheck) jednego lub więcej torrentów."
+    },
+    "reannounce_torrents": {
+      "name": "Reannounce torrentów",
+      "description": "Wymusza ponowne zgłoszenie się (reannounce) do trackerów dla jednego lub więcej torrentów."
+    },
+    "force_start": {
+      "name": "Wymuszony start",
+      "description": "Włącza lub wyłącza wymuszony start dla jednego lub więcej torrentów."
+    },
+    "set_auto_management": {
+      "name": "Ustaw automatyczne zarządzanie torrentem",
+      "description": "Włącza lub wyłącza automatyczne zarządzanie torrentem (Auto TMM) dla jednego lub więcej torrentów."
+    },
+    "set_super_seeding": {
+      "name": "Ustaw super seeding",
+      "description": "Włącza lub wyłącza super seeding dla jednego lub więcej torrentów."
+    },
+    "increase_priority": {
+      "name": "Zwiększ priorytet",
+      "description": "Zwiększa priorytet w kolejce dla jednego lub więcej torrentów."
+    },
+    "decrease_priority": {
+      "name": "Zmniejsz priorytet",
+      "description": "Zmniejsza priorytet w kolejce dla jednego lub więcej torrentów."
+    },
+    "top_priority": {
+      "name": "Najwyższy priorytet",
+      "description": "Przenosi jeden lub więcej torrentów na początek kolejki."
+    },
+    "bottom_priority": {
+      "name": "Najniższy priorytet",
+      "description": "Przenosi jeden lub więcej torrentów na koniec kolejki."
+    },
+    "set_location": {
+      "name": "Ustaw lokalizację",
+      "description": "Przenosi pliki jednego lub więcej torrentów do nowej lokalizacji."
+    },
+    "set_save_path": {
+      "name": "Ustaw ścieżkę zapisu",
+      "description": "Ustawia ścieżkę zapisu dla jednego lub więcej torrentów."
+    },
+    "set_category": {
+      "name": "Ustaw kategorię",
+      "description": "Przypisuje kategorię do jednego lub więcej torrentów."
+    },
+    "add_tags": {
+      "name": "Dodaj tagi",
+      "description": "Dodaje jeden lub więcej tagów do jednego lub więcej torrentów."
+    },
+    "remove_tags": {
+      "name": "Usuń tagi",
+      "description": "Usuwa jeden lub więcej tagów z jednego lub więcej torrentów."
+    },
+    "set_share_limits": {
+      "name": "Ustaw limity udziału",
+      "description": "Ustawia limity współczynnika, czasu wysyłania i czasu wysyłania w bezczynności dla jednego lub więcej torrentów."
+    },
+    "set_upload_limit": {
+      "name": "Ustaw limit wysyłania torrenta",
+      "description": "Ustawia limit prędkości wysyłania dla jednego lub więcej torrentów."
+    },
+    "set_download_limit": {
+      "name": "Ustaw limit pobierania torrenta",
+      "description": "Ustawia limit prędkości pobierania dla jednego lub więcej torrentów."
+    },
+    "rename_torrent": {
+      "name": "Zmień nazwę torrenta",
+      "description": "Zmienia nazwę pojedynczego torrenta."
+    },
+    "set_file_priority": {
+      "name": "Ustaw priorytet plików",
+      "description": "Ustawia priorytet pobierania konkretnych plików w torrencie."
+    },
+    "export_torrent": {
+      "name": "Eksportuj torrent",
+      "description": "Eksportuje plik .torrent jako zawartość zakodowaną w base64."
+    },
+    "create_category": {
+      "name": "Utwórz kategorię",
+      "description": "Tworzy nową kategorię torrentów."
+    },
+    "edit_category": {
+      "name": "Edytuj kategorię",
+      "description": "Edytuje istniejącą kategorię torrentów."
+    },
+    "remove_categories": {
+      "name": "Usuń kategorie",
+      "description": "Usuwa jedną lub więcej kategorii torrentów."
+    },
+    "create_tags": {
+      "name": "Utwórz tagi",
+      "description": "Tworzy jeden lub więcej tagów."
+    },
+    "delete_tags": {
+      "name": "Usuń tagi",
+      "description": "Usuwa jeden lub więcej tagów."
+    },
+    "set_speed_limits_mode": {
+      "name": "Ustaw tryb alternatywnych limitów prędkości",
+      "description": "Włącza lub wyłącza alternatywne globalne limity prędkości."
+    },
+    "set_global_download_limit": {
+      "name": "Ustaw globalny limit pobierania",
+      "description": "Ustawia globalny limit prędkości pobierania."
+    },
+    "set_global_upload_limit": {
+      "name": "Ustaw globalny limit wysyłania",
+      "description": "Ustawia globalny limit prędkości wysyłania."
+    },
+    "ban_peers": {
+      "name": "Zbanuj peerów",
+      "description": "Banuje jednego lub więcej peerów w formacie host:port."
+    },
+    "set_preferences": {
+      "name": "Ustaw preferencje aplikacji",
+      "description": "Ustawia jeden lub więcej surowych kluczy preferencji aplikacji qBittorrent."
+    },
+    "rss_add_feed": {
+      "name": "Dodaj kanał RSS",
+      "description": "Dodaje nowy kanał RSS."
+    },
+    "rss_remove_item": {
+      "name": "Usuń element RSS",
+      "description": "Usuwa folder lub kanał RSS."
+    },
+    "rss_set_rule": {
+      "name": "Ustaw regułę auto-pobierania RSS",
+      "description": "Tworzy lub aktualizuje regułę automatycznego pobierania RSS."
+    },
+    "rss_remove_rule": {
+      "name": "Usuń regułę auto-pobierania RSS",
+      "description": "Usuwa regułę automatycznego pobierania RSS."
+    },
+    "search_start": {
+      "name": "Rozpocznij wyszukiwanie",
+      "description": "Rozpoczyna wyszukiwanie przy użyciu wtyczek wyszukiwania qBittorrent."
+    },
+    "search_stop": {
+      "name": "Zatrzymaj wyszukiwanie",
+      "description": "Zatrzymuje trwające wyszukiwanie."
+    },
+    "search_get_results": {
+      "name": "Pobierz wyniki wyszukiwania",
+      "description": "Pobiera wyniki dla zadania wyszukiwania."
+    },
+    "get_torrents": {
+      "name": "Pobierz listę torrentów",
+      "description": "Pobiera pełną, opcjonalnie filtrowaną listę torrentów (użyj tego, aby znaleźć hashe)."
+    },
+    "get_app_preferences": {
+      "name": "Pobierz preferencje aplikacji",
+      "description": "Pobiera wszystkie aktualne preferencje aplikacji qBittorrent."
+    },
+    "create_torrent": {
+      "name": "Utwórz torrent",
+      "description": "Tworzy nowy plik .torrent z zawartości znajdującej się na hoście qBittorrent (funkcja eksperymentalna; najnowsza część API)."
+    }
+  }
+}

@@ -1,0 +1,799 @@
+pause_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      example: "['0102030405060708090a0b0c0d0e0f1011121314']"
+      selector:
+        object:
+
+resume_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+recheck_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+reannounce_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+increase_priority:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+decrease_priority:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+top_priority:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+bottom_priority:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+
+force_start:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    enable:
+      required: true
+      default: true
+      selector:
+        boolean:
+
+set_auto_management:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    enable:
+      required: true
+      default: true
+      selector:
+        boolean:
+
+set_super_seeding:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    enable:
+      required: true
+      default: true
+      selector:
+        boolean:
+
+delete_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    delete_files:
+      default: false
+      selector:
+        boolean:
+
+set_category:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    category:
+      required: true
+      selector:
+        text:
+
+set_location:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    location:
+      required: true
+      selector:
+        text:
+
+set_save_path:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    save_path:
+      required: true
+      selector:
+        text:
+
+add_tags:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    tags:
+      required: true
+      selector:
+        object:
+
+remove_tags:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    tags:
+      required: true
+      selector:
+        object:
+
+set_upload_limit:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    limit:
+      required: true
+      description: Bytes/second. 0 or -1 disables the limit.
+      selector:
+        number:
+          min: -1
+          max: 1073741824
+          mode: box
+
+set_download_limit:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    limit:
+      required: true
+      description: Bytes/second. 0 or -1 disables the limit.
+      selector:
+        number:
+          min: -1
+          max: 1073741824
+          mode: box
+
+set_share_limits:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hashes:
+      required: true
+      selector:
+        object:
+    ratio_limit:
+      description: -2 = use global value, -1 = no limit.
+      selector:
+        number:
+          min: -2
+          max: 100
+          step: 0.1
+          mode: box
+    seeding_time_limit:
+      description: Minutes. -2 = use global value, -1 = no limit.
+      selector:
+        number:
+          min: -2
+          max: 525600
+          mode: box
+    inactive_seeding_time_limit:
+      description: Minutes. -2 = use global value, -1 = no limit.
+      selector:
+        number:
+          min: -2
+          max: 525600
+          mode: box
+
+rename_torrent:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hash:
+      required: true
+      selector:
+        text:
+    name:
+      required: true
+      selector:
+        text:
+
+set_file_priority:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hash:
+      required: true
+      selector:
+        text:
+    file_ids:
+      required: true
+      description: List of file IDs within the torrent (see get_torrents/torrent properties).
+      selector:
+        object:
+    priority:
+      required: true
+      description: "0 = do not download, 1 = normal, 6 = high, 7 = maximal."
+      selector:
+        number:
+          min: 0
+          max: 7
+          mode: box
+
+export_torrent:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    hash:
+      required: true
+      selector:
+        text:
+
+add_torrent:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    urls:
+      description: One or more magnet links or HTTP(S) URLs to .torrent files.
+      selector:
+        object:
+    torrent_file_path:
+      description: >-
+        Path to a .torrent file readable by Home Assistant (must be within
+        allowlist_external_dirs).
+      selector:
+        text:
+    torrent_file_content:
+      description: Base64-encoded contents of a .torrent file.
+      selector:
+        text:
+    save_path:
+      selector:
+        text:
+    category:
+      selector:
+        text:
+    tags:
+      selector:
+        object:
+    paused:
+      selector:
+        boolean:
+    skip_checking:
+      selector:
+        boolean:
+    root_folder:
+      selector:
+        boolean:
+    rename:
+      selector:
+        text:
+    upload_limit:
+      description: Bytes/second.
+      selector:
+        number:
+          min: 0
+          max: 1073741824
+          mode: box
+    download_limit:
+      description: Bytes/second.
+      selector:
+        number:
+          min: 0
+          max: 1073741824
+          mode: box
+    auto_torrent_management:
+      selector:
+        boolean:
+    sequential_download:
+      selector:
+        boolean:
+    first_last_piece_priority:
+      selector:
+        boolean:
+    content_layout:
+      selector:
+        select:
+          options:
+            - Original
+            - Subfolder
+            - NoSubfolder
+    ratio_limit:
+      selector:
+        number:
+          min: -2
+          max: 100
+          step: 0.1
+          mode: box
+    seeding_time_limit:
+      description: Minutes.
+      selector:
+        number:
+          min: -2
+          max: 525600
+          mode: box
+
+create_category:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    name:
+      required: true
+      selector:
+        text:
+    save_path:
+      selector:
+        text:
+    download_path:
+      selector:
+        text:
+
+edit_category:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    name:
+      required: true
+      selector:
+        text:
+    save_path:
+      selector:
+        text:
+    download_path:
+      selector:
+        text:
+
+remove_categories:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    names:
+      required: true
+      selector:
+        object:
+
+create_tags:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    tags:
+      required: true
+      selector:
+        object:
+
+delete_tags:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    tags:
+      required: true
+      selector:
+        object:
+
+set_speed_limits_mode:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    enabled:
+      required: true
+      selector:
+        boolean:
+
+set_global_download_limit:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    limit:
+      required: true
+      description: Bytes/second. 0 disables the limit.
+      selector:
+        number:
+          min: 0
+          max: 1073741824
+          mode: box
+
+set_global_upload_limit:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    limit:
+      required: true
+      description: Bytes/second. 0 disables the limit.
+      selector:
+        number:
+          min: 0
+          max: 1073741824
+          mode: box
+
+ban_peers:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    peers:
+      required: true
+      description: "List of peers in 'host:port' form."
+      selector:
+        object:
+
+set_preferences:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    preferences:
+      required: true
+      description: >-
+        Freeform map of qBittorrent preference keys to values (see
+        get_app_preferences for the current values and available keys).
+      selector:
+        object:
+
+rss_add_feed:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    url:
+      required: true
+      selector:
+        text:
+    path:
+      description: "Folder/name path, e.g. Movies\\MyFeed."
+      selector:
+        text:
+
+rss_remove_item:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    path:
+      required: true
+      selector:
+        text:
+
+rss_set_rule:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    rule_name:
+      required: true
+      selector:
+        text:
+    rule_def:
+      required: true
+      selector:
+        object:
+
+rss_remove_rule:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    rule_name:
+      required: true
+      selector:
+        text:
+
+search_start:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    pattern:
+      required: true
+      selector:
+        text:
+    plugins:
+      default: ["enabled"]
+      selector:
+        object:
+    category:
+      default: "all"
+      selector:
+        text:
+
+search_stop:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    search_id:
+      required: true
+      selector:
+        number:
+          min: 0
+          mode: box
+
+search_get_results:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    search_id:
+      required: true
+      selector:
+        number:
+          min: 0
+          mode: box
+    limit:
+      selector:
+        number:
+          min: 1
+          max: 1000
+          mode: box
+    offset:
+      selector:
+        number:
+          min: 0
+          mode: box
+
+get_torrents:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    status_filter:
+      selector:
+        select:
+          options:
+            - all
+            - downloading
+            - seeding
+            - completed
+            - stopped
+            - active
+            - inactive
+            - running
+            - stalled
+            - stalled_uploading
+            - stalled_downloading
+            - checking
+            - moving
+            - errored
+    category:
+      selector:
+        text:
+    tag:
+      selector:
+        text:
+    sort:
+      selector:
+        text:
+    reverse:
+      selector:
+        boolean:
+
+get_app_preferences:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+
+create_torrent:
+  fields:
+    config_entry_id:
+      required: true
+      selector:
+        config_entry:
+          integration: qbittorrent
+    source_path:
+      required: true
+      description: Path to source content, readable by qBittorrent (not by Home Assistant).
+      selector:
+        text:
+    format:
+      selector:
+        select:
+          options:
+            - v1
+            - v2
+            - hybrid
+    is_private:
+      selector:
+        boolean:
+    piece_size:
+      selector:
+        number:
+          min: 0
+          mode: box
+    comment:
+      selector:
+        text:
+    trackers:
+      selector:
+        object:
+    start_seeding:
+      selector:
+        boolean:
