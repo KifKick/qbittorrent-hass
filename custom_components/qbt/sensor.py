@@ -296,49 +296,6 @@ class QBittorrentTorrentListSensor(QBittorrentEntity, SensorEntity):
         return _torrent_attributes(self.coordinator.data, self._max_torrents)
 
 
-class QBittorrentCategoriesSensor(QBittorrentEntity, SensorEntity):
-    """Diagnostic sensor listing categories and their save paths."""
-
-    _attr_translation_key = "categories_list"
-    _attr_icon = "mdi:label-multiple-outline"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    def __init__(self, coordinator) -> None:
-        super().__init__(coordinator, "categories_list")
-
-    @property
-    def native_value(self) -> StateType:
-        return len(self.coordinator.data.categories)
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        return {
-            name: info.get("savePath")
-            for name, info in self.coordinator.data.categories.items()
-        }
-
-
-class QBittorrentTagsSensor(QBittorrentEntity, SensorEntity):
-    """Diagnostic sensor listing all known tags."""
-
-    _attr_translation_key = "tags_list"
-    _attr_icon = "mdi:tag-multiple-outline"
-    _attr_entity_category = EntityCategory.DIAGNOSTIC
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    def __init__(self, coordinator) -> None:
-        super().__init__(coordinator, "tags_list")
-
-    @property
-    def native_value(self) -> StateType:
-        return len(self.coordinator.data.tags)
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        return {"tags": self.coordinator.data.tags}
-
-
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: QBittorrentConfigEntry,
@@ -356,8 +313,5 @@ async def async_setup_entry(
             CONF_MAX_TORRENTS_IN_ATTRIBUTES, DEFAULT_MAX_TORRENTS_IN_ATTRIBUTES
         )
         entities.append(QBittorrentTorrentListSensor(coordinator, max_torrents))
-
-    entities.append(QBittorrentCategoriesSensor(coordinator))
-    entities.append(QBittorrentTagsSensor(coordinator))
 
     async_add_entities(entities)

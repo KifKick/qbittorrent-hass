@@ -94,9 +94,7 @@
       "app_version": { "name": "Wersja qBittorrent" },
       "webapi_version": { "name": "Wersja Web API" },
       "default_save_path": { "name": "Domyślna ścieżka zapisu" },
-      "torrent_list": { "name": "Lista torrentów" },
-      "categories_list": { "name": "Lista kategorii" },
-      "tags_list": { "name": "Lista tagów" }
+      "torrent_list": { "name": "Lista torrentów" }
     },
     "binary_sensor": {
       "connectivity": { "name": "Łączność" }
