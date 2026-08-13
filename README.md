@@ -4,6 +4,17 @@ A thorough Home Assistant custom integration for [qBittorrent](https://www.qbitt
 
 > **Note:** Home Assistant core ships its own, much more limited built-in `qbittorrent` integration. To avoid colliding with it, this integration's domain is `qbt` (entities and services use the `qbt.` prefix) and it's listed as **"qBittorrent (Advanced)"** in Add Integration. The two can coexist, but you likely only want one configured for the same server.
 
+## AI disclosure
+
+This integration was written **entirely by AI** — [Claude Sonnet 5](https://www.anthropic.com/claude) (Anthropic), via [Claude Code](https://claude.com/claude-code) — every line of Python, every test, the config flow, the service schemas, the translations, and this README. [KifKick](https://github.com/KifKick) directed the work, made the product/design decisions (scope, domain naming, which settings to expose, entity vs. service tradeoffs), and reviewed and tested the result, but did not hand-write the code.
+
+What that means in practice:
+- **Tested, but not battle-tested.** There's an automated test suite (`pytest-homeassistant-custom-component`) covering the config flow, coordinator, services, and diagnostics, and it passes — but real-world testing has only happened against one qBittorrent setup. If something breaks on your setup, please [open an issue](https://github.com/KifKick/qbittorrent-hass/issues) with your qBittorrent/Web API version and the error from Home Assistant's logs.
+- **Review before trusting it with credentials.** This integration handles your qBittorrent username/password (or API key). The code is open — read `config_flow.py` and `coordinator.py` before installing if that matters to you.
+- **No warranty**, per the [MIT license](LICENSE) — standard for open-source, AI-written or not.
+
+Every commit in this repo's history is co-authored by the AI that wrote it, so the git log itself is an accurate record of what was generated and when.
+
 ## Features
 
 - **Config flow** with support for both username/password and API key authentication (qBittorrent v5.2+), HTTPS, self-signed certificates, and reverse-proxy path prefixes.
