@@ -102,6 +102,7 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         )
         self.client = build_client(entry.data)
         self._rid: int = 0
+        self._server_state: dict[str, Any] = {}
         self._torrents: dict[str, dict[str, Any]] = {}
         self._categories: dict[str, Any] = {}
         self._tags: set[str] = set()
@@ -142,6 +143,14 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         maindata = self.client.sync_maindata(rid=self._rid)
         self._rid = maindata.get("rid", self._rid)
 
+        # Like torrents/categories/tags, server_state is also subject to the
+        # rid-based diffing: once full_update is no longer True, qBittorrent
+        # only includes the fields that changed since the last poll. Merging
+        # into a persistent cache (instead of replacing it wholesale) keeps
+        # unchanged fields (e.g. connection_status, dl_info_speed) from
+        # disappearing as soon as they stop changing between polls.
+        self._server_state.update(maindata.get("server_state", {}))
+
         if maindata.get("full_update"):
             self._torrents = dict(maindata.get("torrents", {}))
         else:
@@ -161,7 +170,7 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         counts_by_state = self._aggregate_counts(self._torrents)
 
         data = QBittorrentData(
-            server_state=dict(maindata.get("server_state", {})),
+            server_state=dict(self._server_state),
             torrents=dict(self._torrents),
             categories=dict(self._categories),
             tags=sorted(self._tags),

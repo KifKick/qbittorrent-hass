@@ -52,6 +52,36 @@ async def test_incremental_update_merges_and_removes(hass, mock_config_entry):
     assert coordinator.data.server_state["dl_info_speed"] == 0
 
 
+async def test_partial_server_state_delta_preserves_unchanged_fields(hass, mock_config_entry):
+    """qBittorrent only sends changed server_state fields once full_update is False.
+
+    Fields absent from a delta must not disappear from coordinator.data.server_state;
+    they should keep their last known value until qBittorrent reports a change.
+    """
+    coordinator: QBittorrentCoordinator = mock_config_entry.runtime_data
+    client = coordinator.client
+
+    client.sync_maindata.return_value = {
+        "rid": 2,
+        "full_update": False,
+        "torrents": {},
+        "torrents_removed": [],
+        "categories": {},
+        "categories_removed": [],
+        "tags": [],
+        "tags_removed": [],
+        # Only this one field changed; qBittorrent omits everything else.
+        "server_state": {"up_info_data": 999},
+    }
+
+    await coordinator.async_refresh()
+
+    assert coordinator.data.server_state["up_info_data"] == 999
+    # Untouched fields must be carried over from the initial full update.
+    assert coordinator.data.server_state["connection_status"] == "connected"
+    assert coordinator.data.server_state["dl_info_speed"] == 500
+
+
 async def test_login_failed_marks_update_unsuccessful(hass, mock_config_entry):
     """A LoginFailed error should be surfaced as a failed update (reauth trigger)."""
     coordinator: QBittorrentCoordinator = mock_config_entry.runtime_data
