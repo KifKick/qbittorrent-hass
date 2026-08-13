@@ -11,7 +11,7 @@ async def test_global_sensors_populated(hass, mock_config_entry):
     registry = er.async_get(hass)
 
     entry_id = mock_config_entry.entry_id
-    entity_id = registry.async_get_entity_id("sensor", "qbittorrent", f"{entry_id}_dl_speed")
+    entity_id = registry.async_get_entity_id("sensor", "qbt", f"{entry_id}_dl_speed")
     assert entity_id is not None
 
     state = hass.states.get(entity_id)
@@ -24,7 +24,7 @@ async def test_global_sensors_populated(hass, mock_config_entry):
 async def test_torrent_count_sensor(hass, mock_config_entry):
     registry = er.async_get(hass)
     entry_id = mock_config_entry.entry_id
-    entity_id = registry.async_get_entity_id("sensor", "qbittorrent", f"{entry_id}_torrents_total")
+    entity_id = registry.async_get_entity_id("sensor", "qbt", f"{entry_id}_torrents_total")
     assert entity_id is not None
     state = hass.states.get(entity_id)
     assert state.state == "2"

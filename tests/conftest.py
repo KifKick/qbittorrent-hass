@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from custom_components.qbittorrent.const import DOMAIN
+from custom_components.qbt.const import DOMAIN
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 
@@ -98,7 +98,7 @@ def mock_qbt_client():
 def mock_qbt_client_class(mock_qbt_client):
     """Patch the Client class used by the coordinator/config flow."""
     with patch(
-        "custom_components.qbittorrent.coordinator.Client", return_value=mock_qbt_client
+        "custom_components.qbt.coordinator.Client", return_value=mock_qbt_client
     ) as client_cls:
         yield client_cls
 

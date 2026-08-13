@@ -6,7 +6,7 @@ from typing import Final
 
 from homeassistant.const import Platform
 
-DOMAIN: Final = "qbittorrent"
+DOMAIN: Final = "qbt"
 
 PLATFORMS: Final = [
     Platform.SENSOR,

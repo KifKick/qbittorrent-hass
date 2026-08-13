@@ -1,6 +1,8 @@
-# qBittorrent for Home Assistant
+# qBittorrent (Advanced) for Home Assistant
 
 A thorough Home Assistant custom integration for [qBittorrent](https://www.qbittorrent.org/), built on the [`qbittorrent-api`](https://pypi.org/project/qbittorrent-api/) library. Configuration is done entirely through the Home Assistant UI (Settings → Devices & Services) — no YAML required.
+
+> **Note:** Home Assistant core ships its own, much more limited built-in `qbittorrent` integration. To avoid colliding with it, this integration's domain is `qbt` (entities and services use the `qbt.` prefix) and it's listed as **"qBittorrent (Advanced)"** in Add Integration. The two can coexist, but you likely only want one configured for the same server.
 
 ## Features
 
@@ -9,7 +11,7 @@ A thorough Home Assistant custom integration for [qBittorrent](https://www.qbitt
 - **Diagnostic "list" sensors** for torrents, categories and tags — their attributes are the easiest way to look up a torrent's hash for use in automations.
 - **Switches**: alternative speed limits, DHT.
 - **Buttons**: resume all, pause all, reannounce all, shut down qBittorrent.
-- **~40 services** covering almost the entire qBittorrent Web API: adding/removing/pausing/resuming torrents, categories, tags, share/speed limits, file priorities, RSS feeds and auto-download rules, the search plugin API, and a `get_torrents` response service for finding hashes without relying on sensor attributes.
+- **44 services** covering almost the entire qBittorrent Web API: adding/removing/pausing/resuming torrents, categories, tags, share/speed limits, file priorities, RSS feeds and auto-download rules, the search plugin API, and a `get_torrents` response service for finding hashes without relying on sensor attributes.
 - **Options flow** to tune the polling interval and the torrent-list sensor's size.
 - **Multiple qBittorrent instances** are supported — add one config entry per server.
 - Full **diagnostics** download (with credentials redacted) for bug reports.
@@ -46,7 +48,7 @@ Afterwards, use the integration's **Configure** option to adjust the polling int
 Since this integration intentionally does not create one entity per torrent (to avoid entity-count bloat), use one of:
 
 - The `sensor.<name>_torrent_list` entity's attributes (Developer Tools → States).
-- The `qbittorrent.get_torrents` service, which returns the full/filtered torrent list as a service response — this is the recommended approach for large libraries, since the sensor's attributes are capped.
+- The `qbt.get_torrents` service, which returns the full/filtered torrent list as a service response — this is the recommended approach for large libraries, since the sensor's attributes are capped.
 
 ## Services
 

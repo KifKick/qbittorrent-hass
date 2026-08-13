@@ -7,7 +7,7 @@ from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from qbittorrentapi.exceptions import APIConnectionError, LoginFailed
 
-from custom_components.qbittorrent.const import CONF_SCAN_INTERVAL, DOMAIN
+from custom_components.qbt.const import CONF_SCAN_INTERVAL, DOMAIN
 
 from .conftest import MOCK_CONFIG_DATA
 

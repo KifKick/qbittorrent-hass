@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from qbittorrentapi.exceptions import APIConnectionError, LoginFailed
 
-from custom_components.qbittorrent.coordinator import QBittorrentCoordinator
+from custom_components.qbt.coordinator import QBittorrentCoordinator
 
 from .conftest import MOCK_SERVER_STATE
 

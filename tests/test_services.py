@@ -6,7 +6,7 @@ import pytest
 from homeassistant.exceptions import ServiceValidationError
 from qbittorrentapi.exceptions import Conflict409Error, NotFound404Error
 
-from custom_components.qbittorrent.const import DOMAIN
+from custom_components.qbt.const import DOMAIN
 
 
 async def test_pause_torrents_calls_client(hass, mock_config_entry):

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from custom_components.qbittorrent.diagnostics import async_get_config_entry_diagnostics
+from custom_components.qbt.diagnostics import async_get_config_entry_diagnostics
 
 
 async def test_diagnostics_redacts_secrets(hass, mock_config_entry):
