@@ -68,8 +68,10 @@ async def test_banned_shows_distinct_error_from_invalid_auth(
 
     result = await _start_user_flow(hass)
     result = await hass.config_entries.flow.async_configure(result["flow_id"], USER_INPUT)
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], AUTH_INPUT)
 
     assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "auth"
     assert result["errors"] == {"base": "banned"}
 
 

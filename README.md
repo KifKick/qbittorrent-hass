@@ -27,16 +27,16 @@ A thorough Home Assistant custom integration for [qBittorrent](https://www.qbitt
 ### HACS (recommended)
 
 1. In HACS, go to **Integrations → ⋮ → Custom repositories** and add this repository's URL.
-2. Search for "qBittorrent" in HACS and install it.
+2. Search for "qBittorrent (Advanced)" in HACS and install it.
 3. Restart Home Assistant.
 
 ### Manual
 
-Copy `custom_components/qbittorrent` into your Home Assistant `config/custom_components/` directory and restart.
+Copy `custom_components/qbt` into your Home Assistant `config/custom_components/` directory and restart.
 
 ## Configuration
 
-Go to **Settings → Devices & Services → Add Integration**, search for "qBittorrent", and follow the steps:
+Go to **Settings → Devices & Services → Add Integration**, search for "qBittorrent (Advanced)", and follow the steps:
 
 1. Enter the host, port, and whether to use HTTPS/verify the certificate.
 2. Choose an authentication method — username/password, or an API key generated in the qBittorrent WebUI.
