@@ -103,7 +103,22 @@
     },
     "switch": {
       "alt_speed_limits": { "name": "Alternatywne limity prędkości" },
-      "dht": { "name": "DHT" }
+      "dht": { "name": "DHT" },
+      "queueing_enabled": { "name": "Kolejkowanie torrentów" }
+    },
+    "number": {
+      "listen_port": { "name": "Port połączeń przychodzących" },
+      "max_connec": { "name": "Maksymalna liczba połączeń" },
+      "max_connec_per_torrent": { "name": "Maksymalna liczba połączeń na torrent" },
+      "max_uploads": { "name": "Maksymalna liczba slotów wysyłania" },
+      "max_uploads_per_torrent": { "name": "Maksymalna liczba slotów wysyłania na torrent" },
+      "dl_limit": { "name": "Globalny limit pobierania" },
+      "up_limit": { "name": "Globalny limit wysyłania" },
+      "alt_dl_limit": { "name": "Alternatywny limit pobierania" },
+      "alt_up_limit": { "name": "Alternatywny limit wysyłania" },
+      "max_active_downloads": { "name": "Maksymalna liczba aktywnych pobierań" },
+      "max_active_uploads": { "name": "Maksymalna liczba aktywnych wysyłań" },
+      "max_active_torrents": { "name": "Maksymalna liczba aktywnych torrentów" }
     },
     "button": {
       "resume_all": { "name": "Wznów wszystkie torrenty" },

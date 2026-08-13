@@ -107,7 +107,19 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         self._categories: dict[str, Any] = {}
         self._tags: set[str] = set()
         self._cycle = 0
+        self._force_next_preferences_fetch = False
         self._unsupported_version_notified = False
+
+    async def async_request_refresh_after_write(self) -> None:
+        """Refresh after a switch/number/button write.
+
+        Preferences are normally only re-fetched every Nth cycle; forcing a
+        fetch on the very next cycle means an entity backed by
+        ``data.preferences`` reflects the value the user just set immediately,
+        instead of waiting for the next slow cycle.
+        """
+        self._force_next_preferences_fetch = True
+        await self.async_request_refresh()
 
     async def _async_update_data(self) -> QBittorrentData:
         try:
@@ -182,12 +194,14 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
             default_save_path=self.data.default_save_path if self.data else None,
         )
 
-        if self._cycle % DEFAULT_SLOW_UPDATE_EVERY_N_CYCLES == 0:
+        is_slow_cycle = self._cycle % DEFAULT_SLOW_UPDATE_EVERY_N_CYCLES == 0
+        if is_slow_cycle or self._force_next_preferences_fetch:
             data.app_version = self.client.app_version()
             data.web_api_version = self.client.app_web_api_version()
             data.build_info = dict(self.client.app_build_info())
             data.preferences = dict(self.client.app_preferences())
             data.default_save_path = self.client.app_default_save_path()
+            self._force_next_preferences_fetch = False
         self._cycle += 1
 
         return data

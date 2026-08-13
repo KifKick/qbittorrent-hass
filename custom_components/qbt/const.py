@@ -13,6 +13,7 @@ PLATFORMS: Final = [
     Platform.BINARY_SENSOR,
     Platform.SWITCH,
     Platform.BUTTON,
+    Platform.NUMBER,
 ]
 
 # --- Config entry / options keys -------------------------------------------------

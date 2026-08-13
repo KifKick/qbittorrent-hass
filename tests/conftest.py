@@ -87,7 +87,22 @@ def mock_qbt_client():
     client.app_version.return_value = "v5.2.3"
     client.app_web_api_version.return_value = "2.15.1"
     client.app_build_info.return_value = {"qt": "6.7.0"}
-    client.app_preferences.return_value = {"dht": True}
+    client.app_preferences.return_value = {
+        "dht": True,
+        "queueing_enabled": True,
+        "listen_port": 6881,
+        "max_connec": 500,
+        "max_connec_per_torrent": 100,
+        "max_uploads": 20,
+        "max_uploads_per_torrent": 4,
+        "dl_limit": 0,
+        "up_limit": 0,
+        "alt_dl_limit": 10,
+        "alt_up_limit": 10,
+        "max_active_downloads": 5,
+        "max_active_uploads": 2,
+        "max_active_torrents": 10,
+    }
     client.app_default_save_path.return_value = "/downloads"
     client.sync_maindata.return_value = dict(MOCK_MAINDATA_FULL)
     client.transfer_speed_limits_mode.return_value = "0"

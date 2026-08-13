@@ -9,7 +9,8 @@ A thorough Home Assistant custom integration for [qBittorrent](https://www.qbitt
 - **Config flow** with support for both username/password and API key authentication (qBittorrent v5.2+), HTTPS, self-signed certificates, and reverse-proxy path prefixes.
 - **Global sensors**: download/upload speed, session totals, speed limits, share ratio, free disk space, DHT nodes, peer connections, connection status, torrent counts by state, category/tag counts, app & Web API version, default save path.
 - **Diagnostic "list" sensors** for torrents, categories and tags — their attributes are the easiest way to look up a torrent's hash for use in automations.
-- **Switches**: alternative speed limits, DHT.
+- **Switches**: alternative speed limits, DHT, torrent queueing.
+- **Number entities** to edit connection/queueing settings directly from the device card: incoming port, max connections (global/per-torrent), max upload slots (global/per-torrent), global and alternative speed limits, and max active downloads/uploads/torrents.
 - **Buttons**: resume all, pause all, reannounce all, shut down qBittorrent.
 - **44 services** covering almost the entire qBittorrent Web API: adding/removing/pausing/resuming torrents, categories, tags, share/speed limits, file priorities, RSS feeds and auto-download rules, the search plugin API, and a `get_torrents` response service for finding hashes without relying on sensor attributes.
 - **Options flow** to tune the polling interval and the torrent-list sensor's size.
