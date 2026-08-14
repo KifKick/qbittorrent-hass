@@ -54,7 +54,9 @@ class QBittorrentData:
     default_save_path: str | None = None
 
 
-def build_client(entry_data: dict[str, Any], *, raise_for_unsupported_version: bool = False) -> Client:
+def build_client(
+    entry_data: dict[str, Any], *, raise_for_unsupported_version: bool = False
+) -> Client:
     """Build a qbittorrent-api Client from config entry data.
 
     Isolated in one place so the API-key vs. username/password branching
@@ -164,7 +166,9 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         except Exception as err:  # noqa: BLE001
             _LOGGER.debug("Ignoring error logging out of qBittorrent on unload: %s", err)
 
-    def _check_version_supported(self, app_version: str | None, web_api_version: str | None) -> None:
+    def _check_version_supported(
+        self, app_version: str | None, web_api_version: str | None
+    ) -> None:
         """Create a non-fixable repair issue if the version isn't fully supported.
 
         Per qbittorrent-api's own docs, an unsupported version still works for
