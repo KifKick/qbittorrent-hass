@@ -9,6 +9,7 @@ a specific qBittorrent instance can be targeted when multiple are configured.
 from __future__ import annotations
 
 import base64
+import binascii
 import logging
 from collections.abc import Callable
 from functools import partial
@@ -28,6 +29,7 @@ from qbittorrentapi.exceptions import (
     APIConnectionError,
     Conflict409Error,
     Forbidden403Error,
+    LoginFailed,
     NotFound404Error,
 )
 
@@ -123,11 +125,20 @@ async def _async_call(hass: HomeAssistant, coordinator, func: Callable, /, **kwa
         raise ServiceValidationError(
             f"qBittorrent rejected the request due to a conflicting state: {err}"
         ) from err
-    except Forbidden403Error as err:
+    except LoginFailed as err:
+        # qbittorrent-api already retries once internally by re-logging in on a 403;
+        # LoginFailed only reaches us once that retry itself failed, meaning the
+        # stored credentials are genuinely invalid.
         coordinator.config_entry.async_start_reauth(hass)
         raise HomeAssistantError(
-            "qBittorrent rejected the request; re-authentication has been requested"
+            "qBittorrent authentication failed; re-authentication has been requested"
         ) from err
+    except Forbidden403Error as err:
+        # Surfaces after the internal re-login retry *succeeded* but the request
+        # still got a 403 (e.g. a temporary IP ban from brute-force protection, or
+        # an action not permitted for this session). Credentials aren't the issue,
+        # so don't force a reauth flow here.
+        raise HomeAssistantError(f"qBittorrent rejected the request: {err}") from err
     except APIConnectionError as err:
         raise HomeAssistantError(f"Cannot reach qBittorrent: {err}") from err
     except (NotImplementedError, AttributeError) as err:
@@ -496,7 +507,12 @@ def _make_add_torrent_handler(hass: HomeAssistant) -> Callable:
                 )
             torrent_files.append(path)
         if content := data.get("torrent_file_content"):
-            torrent_files.append(base64.b64decode(content))
+            try:
+                torrent_files.append(base64.b64decode(content, validate=True))
+            except binascii.Error as err:
+                raise ServiceValidationError(
+                    f"'torrent_file_content' is not valid base64: {err}"
+                ) from err
 
         await _async_call(
             hass,

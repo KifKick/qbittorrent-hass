@@ -36,7 +36,6 @@ SWITCH_DESCRIPTIONS: tuple[QBittorrentSwitchEntityDescription, ...] = (
         key="dht",
         translation_key="dht",
         icon="mdi:lan",
-        entity_category=None,
         is_on_fn=lambda data: bool(data.preferences.get("dht")),
         turn_on_fn=lambda client: client.app_set_preferences({"dht": True}),
         turn_off_fn=lambda client: client.app_set_preferences({"dht": False}),
@@ -45,7 +44,6 @@ SWITCH_DESCRIPTIONS: tuple[QBittorrentSwitchEntityDescription, ...] = (
         key="queueing_enabled",
         translation_key="queueing_enabled",
         icon="mdi:sort-numeric-ascending",
-        entity_category=None,
         is_on_fn=lambda data: bool(data.preferences.get("queueing_enabled")),
         turn_on_fn=lambda client: client.app_set_preferences({"queueing_enabled": True}),
         turn_off_fn=lambda client: client.app_set_preferences({"queueing_enabled": False}),
@@ -71,15 +69,11 @@ class QBittorrentSwitch(QBittorrentEntity, SwitchEntity):
         return self.entity_description.is_on_fn(self.coordinator.data)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        await self.hass.async_add_executor_job(
-            self.entity_description.turn_on_fn, self.coordinator.client
-        )
+        await self._async_write(self.entity_description.turn_on_fn, self.coordinator.client)
         await self.coordinator.async_request_refresh_after_write()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        await self.hass.async_add_executor_job(
-            self.entity_description.turn_off_fn, self.coordinator.client
-        )
+        await self._async_write(self.entity_description.turn_off_fn, self.coordinator.client)
         await self.coordinator.async_request_refresh_after_write()
 
 

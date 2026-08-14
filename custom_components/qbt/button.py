@@ -66,9 +66,7 @@ class QBittorrentButton(QBittorrentEntity, ButtonEntity):
         self.entity_description = description
 
     async def async_press(self) -> None:
-        await self.hass.async_add_executor_job(
-            self.entity_description.press_fn, self.coordinator.client
-        )
+        await self._async_write(self.entity_description.press_fn, self.coordinator.client)
         await self.coordinator.async_request_refresh()
 
 

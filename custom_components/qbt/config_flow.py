@@ -114,7 +114,10 @@ async def _async_validate(hass: HomeAssistant, data: dict[str, Any]) -> dict[str
     """
 
     def _connect() -> dict[str, Any]:
-        client = build_client(data)
+        # Unlike the coordinator's long-lived client, it's safe (and useful) for
+        # this short-lived validation client to fail loudly on an unsupported
+        # version: it's used once and discarded, so it can't get stuck retrying.
+        client = build_client(data, raise_for_unsupported_version=True)
         client.auth_log_in()
         return {
             "app_version": client.app_version(),

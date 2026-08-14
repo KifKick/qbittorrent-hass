@@ -23,10 +23,18 @@ from .const import (
     DEFAULT_ENABLE_TORRENT_LIST_SENSOR,
     DEFAULT_MAX_TORRENTS_IN_ATTRIBUTES,
 )
-from .coordinator import QBittorrentConfigEntry, QBittorrentData
+from .coordinator import QBittorrentConfigEntry, QBittorrentCoordinator, QBittorrentData
 from .entity import QBittorrentEntity
 
 CONNECTION_STATUS_OPTIONS = ["connected", "firewalled", "disconnected"]
+
+
+def _connection_status(data: QBittorrentData) -> str | None:
+    status = _server_state(data).get("connection_status")
+    # Guard against qBittorrent adding a new status value in the future: an
+    # unrecognized string would otherwise fail HA's ENUM state validation and
+    # make the sensor log errors instead of just going momentarily unknown.
+    return status if status in CONNECTION_STATUS_OPTIONS else None
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -145,7 +153,7 @@ SENSOR_DESCRIPTIONS: tuple[QBittorrentSensorEntityDescription, ...] = (
         translation_key="connection_status",
         device_class=SensorDeviceClass.ENUM,
         options=CONNECTION_STATUS_OPTIONS,
-        value_fn=lambda data: _server_state(data).get("connection_status"),
+        value_fn=_connection_status,
     ),
     QBittorrentSensorEntityDescription(
         key="torrents_total",
@@ -232,7 +240,11 @@ SENSOR_DESCRIPTIONS: tuple[QBittorrentSensorEntityDescription, ...] = (
 
 
 def _torrent_attributes(data: QBittorrentData, max_torrents: int) -> dict[str, Any]:
-    torrents = list(data.torrents.items())[:max_torrents]
+    # Sort by name so which torrents get truncated is stable and predictable
+    # instead of depending on qBittorrent's sync_maindata response order.
+    torrents = sorted(
+        data.torrents.items(), key=lambda item: (item[1].get("name") or "").lower()
+    )[:max_torrents]
     return {
         torrent_hash: {
             "name": torrent.get("name"),
@@ -258,7 +270,7 @@ class QBittorrentSensor(QBittorrentEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator,
+        coordinator: QBittorrentCoordinator,
         description: QBittorrentSensorEntityDescription,
     ) -> None:
         super().__init__(coordinator, description.key)
@@ -283,7 +295,7 @@ class QBittorrentTorrentListSensor(QBittorrentEntity, SensorEntity):
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_state_class = SensorStateClass.MEASUREMENT
 
-    def __init__(self, coordinator, max_torrents: int) -> None:
+    def __init__(self, coordinator: QBittorrentCoordinator, max_torrents: int) -> None:
         super().__init__(coordinator, "torrent_list")
         self._max_torrents = max_torrents
 

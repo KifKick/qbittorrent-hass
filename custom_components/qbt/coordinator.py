@@ -12,13 +12,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from qbittorrentapi import Client
-from qbittorrentapi.exceptions import (
-    APIConnectionError,
-    Forbidden403Error,
-    LoginFailed,
-    UnsupportedQbittorrentVersion,
-)
+from qbittorrentapi import Client, Version
+from qbittorrentapi.exceptions import APIConnectionError, Forbidden403Error, LoginFailed
 
 from .const import (
     AUTH_METHOD_API_KEY,
@@ -59,13 +54,22 @@ class QBittorrentData:
     default_save_path: str | None = None
 
 
-def build_client(entry_data: dict[str, Any]) -> Client:
+def build_client(entry_data: dict[str, Any], *, raise_for_unsupported_version: bool = False) -> Client:
     """Build a qbittorrent-api Client from config entry data.
 
     Isolated in one place so the API-key vs. username/password branching
     (and the exact Client kwarg for each) only needs to be maintained here.
+
+    ``raise_for_unsupported_version`` is only meant for the short-lived client
+    used to validate a connection in the config flow: it makes an unsupported
+    version fail loudly *once*, as a one-time warning during setup/reauth. The
+    coordinator's long-lived client must never set this, because a persistent
+    client re-logs in automatically whenever its session expires (see
+    ``Request._auth_request``) - if that flag were on there, every single
+    re-login on an unsupported version would raise and permanently fail all
+    updates, rather than just warning once and continuing.
     """
-    host = entry_data[CONF_USE_HTTPS] and "https://" or "http://"
+    host = "https://" if entry_data[CONF_USE_HTTPS] else "http://"
     host += entry_data["host"]
     if path := entry_data.get(CONF_PATH):
         host = f"{host}/{path.strip('/')}"
@@ -76,6 +80,7 @@ def build_client(entry_data: dict[str, Any]) -> Client:
         "VERIFY_WEBUI_CERTIFICATE": entry_data.get(CONF_VERIFY_SSL, True),
         "FORCE_SCHEME_FROM_HOST": True,
         "REQUESTS_ARGS": {"timeout": 15},
+        "RAISE_ERROR_FOR_UNSUPPORTED_QBITTORRENT_VERSIONS": raise_for_unsupported_version,
     }
     if entry_data.get(CONF_AUTH_METHOD) == AUTH_METHOD_API_KEY:
         kwargs["api_key"] = entry_data[CONF_API_KEY]
@@ -123,21 +128,54 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
 
     async def _async_update_data(self) -> QBittorrentData:
         try:
-            return await self.hass.async_add_executor_job(self._fetch)
+            data = await self.hass.async_add_executor_job(self._fetch)
         except LoginFailed as err:
+            # qbittorrent-api already retries once internally by re-logging in on a
+            # 403 (see Request._auth_request); LoginFailed only reaches us once that
+            # retry itself failed, so the stored credentials are genuinely bad.
             raise ConfigEntryAuthFailed("qBittorrent authentication failed") from err
         except Forbidden403Error as err:
-            raise ConfigEntryAuthFailed("qBittorrent session was rejected") from err
-        except UnsupportedQbittorrentVersion as err:
-            self._notify_unsupported_version(err)
-            raise UpdateFailed(f"Unsupported qBittorrent version: {err}") from err
+            # Surfaces after the internal re-login retry *succeeded* but the request
+            # still got a 403 (e.g. qBittorrent's brute-force IP ban). The stored
+            # credentials aren't the problem, so don't force a reauth flow for it.
+            _LOGGER.warning(
+                "qBittorrent rejected a request with 403 despite valid credentials "
+                "(possibly a temporary IP ban); will retry on the next update: %s", err
+            )
+            raise UpdateFailed(f"qBittorrent rejected the request: {err}") from err
         except APIConnectionError as err:
             raise UpdateFailed(f"Cannot connect to qBittorrent: {err}") from err
         except Exception as err:
             raise UpdateFailed(f"Unexpected error communicating with qBittorrent: {err}") from err
 
-    def _notify_unsupported_version(self, err: Exception) -> None:
-        if self._unsupported_version_notified:
+        # Must run here (event loop), not inside self._fetch(): issue_registry isn't
+        # thread-safe and self._fetch runs in the executor via async_add_executor_job.
+        self._check_version_supported(data.app_version, data.web_api_version)
+        return data
+
+    async def async_close(self) -> None:
+        """Log out of qBittorrent's WebUI session. Called on unload/reload.
+
+        Best-effort: a logout failure (e.g. the session already expired, or the
+        connection is currently down) must never block unload/reload.
+        """
+        try:
+            await self.hass.async_add_executor_job(self.client.auth_log_out)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.debug("Ignoring error logging out of qBittorrent on unload: %s", err)
+
+    def _check_version_supported(self, app_version: str | None, web_api_version: str | None) -> None:
+        """Create a non-fixable repair issue if the version isn't fully supported.
+
+        Per qbittorrent-api's own docs, an unsupported version still works for
+        most methods, so this only warns once (via Repairs) instead of ever
+        failing an update because of it.
+        """
+        if self._unsupported_version_notified or not app_version or not web_api_version:
+            return
+        if Version.is_app_version_supported(app_version) and Version.is_api_version_supported(
+            web_api_version
+        ):
             return
         self._unsupported_version_notified = True
         ir.async_create_issue(
@@ -147,7 +185,9 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
             is_fixable=False,
             severity=ir.IssueSeverity.WARNING,
             translation_key="unsupported_version",
-            translation_placeholders={"error": str(err)},
+            translation_placeholders={
+                "error": f"App {app_version}, Web API {web_api_version}"
+            },
         )
 
     def _fetch(self) -> QBittorrentData:
@@ -196,12 +236,20 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
 
         is_slow_cycle = self._cycle % DEFAULT_SLOW_UPDATE_EVERY_N_CYCLES == 0
         if is_slow_cycle or self._force_next_preferences_fetch:
-            data.app_version = self.client.app_version()
-            data.web_api_version = self.client.app_web_api_version()
-            data.build_info = dict(self.client.app_build_info())
-            data.preferences = dict(self.client.app_preferences())
-            data.default_save_path = self.client.app_default_save_path()
-            self._force_next_preferences_fetch = False
+            # Isolated from the maindata fetch above: a transient failure here
+            # (rarely-called diagnostic endpoints) shouldn't take down torrent/speed
+            # sensors that already updated fine this cycle. Keep the previous values
+            # and let it try again next cycle.
+            try:
+                data.app_version = self.client.app_version()
+                data.web_api_version = self.client.app_web_api_version()
+                data.build_info = dict(self.client.app_build_info())
+                data.preferences = dict(self.client.app_preferences())
+                data.default_save_path = self.client.app_default_save_path()
+                self._force_next_preferences_fetch = False
+            except APIConnectionError as err:
+                _LOGGER.warning("Failed to refresh qBittorrent app info/preferences: %s", err)
+                self._force_next_preferences_fetch = True
         self._cycle += 1
 
         return data

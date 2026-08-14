@@ -199,7 +199,7 @@ class QBittorrentNumber(QBittorrentEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         preference_key = self.entity_description.preference_key
         new_value = self.entity_description.to_preference_value(value)
-        await self.hass.async_add_executor_job(
+        await self._async_write(
             self.coordinator.client.app_set_preferences, {preference_key: new_value}
         )
         await self.coordinator.async_request_refresh_after_write()
