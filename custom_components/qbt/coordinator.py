@@ -115,7 +115,7 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         self._tags: set[str] = set()
         self._cycle = 0
         self._force_next_preferences_fetch = False
-        self._unsupported_version_notified = False
+        self._checked_versions: tuple[str, str] | None = None
 
     async def async_request_refresh_after_write(self) -> None:
         """Refresh after a switch/number/button write.
@@ -172,20 +172,25 @@ class QBittorrentCoordinator(DataUpdateCoordinator[QBittorrentData]):
         """Create a non-fixable repair issue if the version isn't fully supported.
 
         Per qbittorrent-api's own docs, an unsupported version still works for
-        most methods, so this only warns once (via Repairs) instead of ever
+        most methods, so this only warns once per version (via Repairs) instead of ever
         failing an update because of it.
         """
-        if self._unsupported_version_notified or not app_version or not web_api_version:
+        if not app_version or not web_api_version:
             return
+        if self._checked_versions == (app_version, web_api_version):
+            return
+        self._checked_versions = (app_version, web_api_version)
+        issue_id = f"unsupported_version_{self.config_entry.entry_id}"
         if Version.is_app_version_supported(app_version) and Version.is_api_version_supported(
             web_api_version
         ):
+            # Clear a warning left over from before a library/qBittorrent upgrade.
+            ir.async_delete_issue(self.hass, DOMAIN, issue_id)
             return
-        self._unsupported_version_notified = True
         ir.async_create_issue(
             self.hass,
             DOMAIN,
-            f"unsupported_version_{self.config_entry.entry_id}",
+            issue_id,
             is_fixable=False,
             severity=ir.IssueSeverity.WARNING,
             translation_key="unsupported_version",

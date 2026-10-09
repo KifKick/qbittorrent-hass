@@ -160,3 +160,26 @@ async def test_unsupported_version_warns_without_failing_updates(hass, mock_conf
         DOMAIN, f"unsupported_version_{coordinator.config_entry.entry_id}"
     )
     assert issue is not None
+
+
+async def test_supported_version_clears_stale_unsupported_issue(hass, mock_config_entry):
+    """An issue left over from before a library/qBittorrent upgrade must be removed
+    once the connected version is recognized as supported.
+    """
+    coordinator: QBittorrentCoordinator = mock_config_entry.runtime_data
+    issue_id = f"unsupported_version_{coordinator.config_entry.entry_id}"
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        issue_id,
+        is_fixable=False,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key="unsupported_version",
+        translation_placeholders={"error": "App v0.1.0, Web API 0.1"},
+    )
+    coordinator._checked_versions = None
+    coordinator._force_next_preferences_fetch = True
+
+    await coordinator.async_refresh()
+
+    assert ir.async_get(hass).async_get_issue(DOMAIN, issue_id) is None
