@@ -12,7 +12,12 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfDataRate, UnitOfInformation
+from homeassistant.const import (
+    MATCH_ALL,
+    EntityCategory,
+    UnitOfDataRate,
+    UnitOfInformation,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
@@ -294,6 +299,10 @@ class QBittorrentTorrentListSensor(QBittorrentEntity, SensorEntity):
     _attr_icon = "mdi:format-list-bulleted"
     _attr_entity_category = EntityCategory.DIAGNOSTIC
     _attr_state_class = SensorStateClass.MEASUREMENT
+    # The per-torrent attributes easily exceed the recorder's 16 KiB limit (and
+    # change every poll), so keep them in the state machine only. The count in
+    # the state itself is still recorded for history/statistics.
+    _unrecorded_attributes = frozenset({MATCH_ALL})
 
     def __init__(self, coordinator: QBittorrentCoordinator, max_torrents: int) -> None:
         super().__init__(coordinator, "torrent_list")

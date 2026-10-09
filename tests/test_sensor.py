@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from homeassistant.const import MATCH_ALL
 from homeassistant.helpers import entity_registry as er
 
 
@@ -28,3 +29,15 @@ async def test_torrent_count_sensor(hass, mock_config_entry):
     assert entity_id is not None
     state = hass.states.get(entity_id)
     assert state.state == "2"
+
+
+async def test_torrent_list_attributes_not_recorded(hass, mock_config_entry):
+    registry = er.async_get(hass)
+    entry_id = mock_config_entry.entry_id
+    entity_id = registry.async_get_entity_id("sensor", "qbt", f"{entry_id}_torrent_list")
+    assert entity_id is not None
+    state = hass.states.get(entity_id)
+    # Attributes stay available in the state machine...
+    assert len(state.attributes) > 0
+    # ...but are excluded from the recorder to avoid the 16 KiB attribute limit.
+    assert MATCH_ALL in state.state_info["unrecorded_attributes"]
