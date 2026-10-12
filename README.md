@@ -60,7 +60,7 @@ Afterwards, use the integration's **Configure** option to adjust the polling int
 Since this integration intentionally does not create one entity per torrent (to avoid entity-count bloat), use one of:
 
 - The `sensor.<name>_torrent_list` entity's attributes (Developer Tools → States).
-- The `qbt.get_torrents` service, which returns the full/filtered torrent list as a service response — this is the recommended approach for large libraries, since the sensor's attributes are capped.
+- The `qbt.get_torrents` service, which returns the full/filtered torrent list as a service response — this is the recommended approach for large libraries, since the sensor's attributes are capped. Use `limit`/`offset` to page through big libraries, or `hashes` to fetch specific torrents.
 
 ## Services
 

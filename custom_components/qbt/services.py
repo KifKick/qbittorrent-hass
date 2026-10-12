@@ -11,6 +11,7 @@ from __future__ import annotations
 import base64
 import binascii
 import logging
+from collections import UserList
 from collections.abc import Callable
 from functools import partial
 from typing import Any
@@ -151,7 +152,9 @@ def _dictify(obj: Any) -> Any:
     """Convert qbittorrent-api's dict-like response wrappers into plain JSON-safe types."""
     if isinstance(obj, dict):
         return {key: _dictify(value) for key, value in obj.items()}
-    if isinstance(obj, (list, tuple)):
+    # qbittorrent-api's list responses (e.g. TorrentInfoList) are UserLists, not
+    # lists, and HA's JSON encoder can't serialize them as-is.
+    if isinstance(obj, (list, tuple, UserList)):
         return [_dictify(item) for item in obj]
     return obj
 
@@ -409,6 +412,9 @@ def async_setup_services(hass: HomeAssistant) -> None:
                 vol.Optional("tag"): cv.string,
                 vol.Optional("sort"): cv.string,
                 vol.Optional("reverse"): cv.boolean,
+                vol.Optional("limit"): vol.All(vol.Coerce(int), vol.Range(min=1)),
+                vol.Optional("offset"): vol.All(vol.Coerce(int), vol.Range(min=0)),
+                vol.Optional(ATTR_HASHES): HASHES_SCHEMA,
             }
         ),
         supports_response=SupportsResponse.ONLY,
@@ -709,6 +715,9 @@ def _make_get_torrents_handler(hass: HomeAssistant) -> Callable:
             tag=call.data.get("tag"),
             sort=call.data.get("sort"),
             reverse=call.data.get("reverse"),
+            limit=call.data.get("limit"),
+            offset=call.data.get("offset"),
+            torrent_hashes=call.data.get(ATTR_HASHES),
         )
         return {"torrents": _dictify(result)}
 

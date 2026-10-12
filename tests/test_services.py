@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import pytest
 from homeassistant.exceptions import ServiceValidationError
+from homeassistant.helpers.json import json_bytes
 from qbittorrentapi.exceptions import Conflict409Error, NotFound404Error
+from qbittorrentapi.torrents import TorrentInfoList
 
 from custom_components.qbt.const import DOMAIN
 
@@ -74,9 +76,11 @@ async def test_add_torrent_requires_a_source(hass, mock_config_entry):
 
 async def test_get_torrents_returns_response(hass, mock_config_entry):
     client = mock_config_entry.runtime_data.client
-    client.torrents_info.return_value = [
-        {"hash": "hash1", "name": "Ubuntu ISO", "state": "downloading"}
-    ]
+    # The real client returns a TorrentInfoList (a UserList of TorrentDictionary),
+    # which HA's JSON encoder can't serialize unless converted to plain types.
+    client.torrents_info.return_value = TorrentInfoList(
+        [{"hash": "hash1", "name": "Ubuntu ISO", "state": "downloading"}]
+    )
 
     response = await hass.services.async_call(
         DOMAIN,
@@ -89,6 +93,41 @@ async def test_get_torrents_returns_response(hass, mock_config_entry):
     assert response["torrents"] == [
         {"hash": "hash1", "name": "Ubuntu ISO", "state": "downloading"}
     ]
+    assert type(response["torrents"]) is list
+    assert type(response["torrents"][0]) is dict
+    json_bytes(response)
+
+
+async def test_get_torrents_passes_paging_and_hashes(hass, mock_config_entry):
+    client = mock_config_entry.runtime_data.client
+    client.torrents_info.return_value = TorrentInfoList([])
+
+    await hass.services.async_call(
+        DOMAIN,
+        "get_torrents",
+        {
+            "config_entry_id": mock_config_entry.entry_id,
+            "status_filter": "active",
+            "sort": "dlspeed",
+            "reverse": True,
+            "limit": 25,
+            "offset": 50,
+            "hashes": "hash1",
+        },
+        blocking=True,
+        return_response=True,
+    )
+
+    client.torrents_info.assert_called_once_with(
+        status_filter="active",
+        category=None,
+        tag=None,
+        sort="dlspeed",
+        reverse=True,
+        limit=25,
+        offset=50,
+        torrent_hashes=["hash1"],
+    )
 
 
 async def test_conflict_error_raises_service_validation_error(hass, mock_config_entry):

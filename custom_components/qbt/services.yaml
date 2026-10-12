@@ -752,6 +752,24 @@ get_torrents:
     reverse:
       selector:
         boolean:
+    limit:
+      example: 25
+      selector:
+        number:
+          min: 1
+          max: 10000
+          mode: box
+    offset:
+      example: 0
+      selector:
+        number:
+          min: 0
+          max: 100000
+          mode: box
+    hashes:
+      example: "['0102030405060708090a0b0c0d0e0f1011121314']"
+      selector:
+        object:
 
 get_app_preferences:
   fields:
