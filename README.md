@@ -216,6 +216,8 @@ python -m pytest tests/
 
 The tests use `pytest-homeassistant-custom-component` and cover the config flow, coordinator, entities, actions and diagnostics. CI runs ruff and the tests, plus hassfest and the HACS validator.
 
+To release, bump `version` in [`manifest.json`](custom_components/qbt/manifest.json), add a matching section to [`CHANGELOG.md`](CHANGELOG.md), and push a `vX.Y.Z` tag. The release workflow checks that the tag matches the manifest, runs ruff and the tests, and publishes a GitHub release with that changelog section as notes.
+
 ## AI disclosure
 
 This integration was written **entirely by AI**: Claude Sonnet 5 and later Claude Opus 5.5 (Anthropic), via [Claude Code](https://claude.com/claude-code). That covers the Python, the tests, the translations and this README. [KifKick](https://github.com/KifKick) decided the scope and design and tested it on a real server. Every commit is co-authored by the model that wrote it, so the git log shows what was generated and when.
