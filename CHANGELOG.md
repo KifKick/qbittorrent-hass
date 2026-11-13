@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.7] - 2026-11-13
+
+### Fixed
+
+- **"Unsupported qBittorrent version" repair warning on qBittorrent 5.3.0.** The bundled `qbittorrent-api` library (2026.10.0) only recognized qBittorrent up to v5.2.4. Bumped it to 2026.10.1, which supports v5.3.0 (Web API 2.16.2).
+
 ## [0.2.6] - 2026-10-12
 
 ### Fixed

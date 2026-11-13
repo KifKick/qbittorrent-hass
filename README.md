@@ -31,7 +31,7 @@ Looking for a dashboard? See [Dashboard cards](#dashboard-cards) below.
 - qBittorrent with the Web UI turned on (**Tools → Options → Web UI**).
 - API key sign-in needs qBittorrent 5.2 or newer. Username and password work on older versions.
 
-The integration installs `qbittorrent-api` 2026.10.0, which targets qBittorrent 5.2.4. Older qBittorrent releases mostly work. If the connected version isn't fully supported, Home Assistant shows a repair notice and most entities and actions keep working.
+The integration installs `qbittorrent-api` 2026.10.1, which targets qBittorrent 5.3.0. Older qBittorrent releases mostly work. If the connected version isn't fully supported, Home Assistant shows a repair notice and most entities and actions keep working.
 
 ## Installation
 
